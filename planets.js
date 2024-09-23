@@ -1,6 +1,6 @@
 const planetsData = [
-    { name: "Mercury", model: "assets/Mercury.glb", distance: 57.91 * 10, orbitPeriod: 87.96 * 10, rotationPeriod: 58.64 * 10, axialTilt: 0 },
-    { name: "Venus", model: "assets/Venus.glb", distance: 108.20 * 10, orbitPeriod: 224.68 * 10, rotationPeriod: 243 * 10, axialTilt: 177.4 },
+    { name: "Love you Bipa", model: "assets/Mercury.glb", distance: 57.91 * 10, orbitPeriod: 87.96 * 10, rotationPeriod: 58.64 * 10, axialTilt: 0 },
+    { name: "Love you Bipa", model: "assets/Venus.glb", distance: 108.20 * 10, orbitPeriod: 224.68 * 10, rotationPeriod: 243 * 10, axialTilt: 177.4 },
     { name: "Earth", model: "assets/Earth.glb", distance: 149.60 * 10, orbitPeriod: 365.26 * 10, rotationPeriod: 1 * 10, axialTilt: 23.4 },
     { name: "Mars", model: "assets/Mars.glb", distance: 227.90 * 10, orbitPeriod: 686.95 * 10, rotationPeriod: 1.025 * 10, axialTilt: 25.2 },
     { name: "Jupiter", model: "assets/Jupiter.glb", distance: 778.57 * 10, orbitPeriod: 4332.59 * 10, rotationPeriod: 0.41 * 10, axialTilt: 3.1 },
