@@ -8,7 +8,6 @@ const planetsData = [
     { name: "Uranus", model: "assets/Uranus.glb", distance: 2872.46 * 10, orbitPeriod: 30687 * 10, rotationPeriod: -0.72 * 10, axialTilt: 97.8 },
     { name: "Neptune", model: "assets/Neptune.glb", distance: 4495.06 * 10, orbitPeriod: 60190 * 10, rotationPeriod: 0.67 * 10, axialTilt: 28.3 }
 ];
-
 const planets = [];
 
 // Create text labels for planets
