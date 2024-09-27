@@ -143,8 +143,8 @@ function updatePlanets(planets, selectedPlanet, zooming, camera) {
     }
 }
 
-camera.position.z = 30000;
-camera.position.y = 50000;
+camera.position.z = 3000000;
+camera.position.y = 500000;
 
 function loadSun(scene) {
     const loader = new THREE.GLTFLoader();
