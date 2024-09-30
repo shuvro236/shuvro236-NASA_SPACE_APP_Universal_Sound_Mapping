@@ -2,7 +2,7 @@ let selectedPlanet = null;
 let zooming = false;
 let audioPlaying = null; 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .7, 10000000000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .07, 10000000000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -54,7 +54,7 @@ function createTextLabel(text) {
 }
 
 // Orbit line
-function createOrbitLine(distance, segments = 64, color = 0xffffff) {
+function createOrbitLine(distance, segments = 100, color = 0xffffff) {
     const geometry = new THREE.BufferGeometry();
     const points = [];
 
@@ -73,15 +73,88 @@ function createOrbitLine(distance, segments = 64, color = 0xffffff) {
 function loadPlanets(scene, raycaster, mouse, planets) {
     const loader = new THREE.GLTFLoader();
     const planetsData = [
-        { name: "Mercury", model: "assets/Mercury.glb", distance: 410, orbitPeriod: 87.97, rotationPeriod: 58.64 * 10, axialTilt: 0, scale: 35, mass: 0.33 },
-        { name: "Venus", model: "assets/Venus.glb", distance: 240, orbitPeriod: 224.70, rotationPeriod: 243 * 10, axialTilt: 177.4, scale: 87, mass: 4.87 },
-        { name: "Earth", model: "assets/Earth.glb", distance: 4330, orbitPeriod: 365.26, rotationPeriod: 1 * 10, axialTilt: 23.4, scale: 92, mass: 5.97 },
-        { name: "Mars", model: "assets/Mars.glb", distance: 5070, orbitPeriod: 686.98, rotationPeriod: 1.025 * 10, axialTilt: 25.2, scale: 49, mass: 0.64 },
-        { name: "Jupiter", model: "assets/Jupiter.glb", distance: 172, orbitPeriod: 4332.82, rotationPeriod: 0.41 * 10, axialTilt: 3.1, scale: 121, mass: 1898 },
-        { name: "Saturn", model: "assets/Saturn.glb", distance: 3178, orbitPeriod: 10755.70, rotationPeriod: 0.45 * 10, axialTilt: 26.7, scale: 862, mass: 568 },
-        { name: "Uranus", model: "assets/Uranus.glb", distance: 63780, orbitPeriod: 30687.15, rotationPeriod: -0.72 * 10, axialTilt: 97.8, scale: 372, mass: 86.8 },
-        { name: "Neptune", model: "assets/Neptune.glb", distance: 10000, orbitPeriod: 60190.03, rotationPeriod: 0.67 * 10, axialTilt: 28.3, scale: 356, mass: 102 }
+        {
+            name: "Mercury",
+            model: "assets/Mercury.glb",
+            distance: 57.91, // million km
+            orbitPeriod: 88, // days
+            rotationPeriod: 58.65 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 0.034, // degrees
+            scale: 0.383, // relative to Earth
+            mass: 0.330 // Earth masses
+        },
+        {
+            name: "Venus",
+            model: "assets/Venus.glb",
+            distance: 108.21, // million km
+            orbitPeriod: 225, // days
+            rotationPeriod: 243 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 177.4, // degrees
+            scale: 0.949, // relative to Earth
+            mass: 0.815 // Earth masses
+        },
+        {
+            name: "Earth",
+            model: "assets/Earth.glb",
+            distance: 149.6, // million km
+            orbitPeriod: 365.26, // days
+            rotationPeriod: 1 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 23.5, // degrees
+            scale: 1, // relative to Earth
+            mass: 1 // Earth masses
+        },
+        {
+            name: "Mars",
+            model: "assets/Mars.glb",
+            distance: 227.92, // million km
+            orbitPeriod: 687, // days
+            rotationPeriod: 1.025 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 25.2, // degrees
+            scale: 0.532, // relative to Earth
+            mass: 0.107 // Earth masses
+        },
+        {
+            name: "Jupiter",
+            model: "assets/Jupiter.glb",
+            distance: 778.57, // million km
+            orbitPeriod: 4331, // days
+            rotationPeriod: 0.41 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 3.1, // degrees
+            scale: 11.21, // relative to Earth
+            mass: 317.8 // Earth masses
+        },
+        {
+            name: "Saturn",
+            model: "assets/Saturn.glb",
+            distance: 1433.5, // million km
+            orbitPeriod: 10747, // days
+            rotationPeriod: 0.45 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 26.7, // degrees
+            scale: 9.45, // relative to Earth
+            mass: 95.2 // Earth masses
+        },
+        {
+            name: "Uranus",
+            model: "assets/Uranus.glb",
+            distance: 2872.5, // million km
+            orbitPeriod: 30589, // days
+            rotationPeriod: -0.72 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 97.8, // degrees
+            scale: 4.01, // relative to Earth
+            mass: 14.5 // Earth masses
+        },
+        {
+            name: "Neptune",
+            model: "assets/Neptune.glb",
+            distance: 4495.1, // million km
+            orbitPeriod: 59800, // days
+            rotationPeriod: 0.67 * 60 * 60 * 1000, // milliseconds
+            axialTilt: 28.3, // degrees
+            scale: 3.88, // relative to Earth
+            mass: 17.1 // Earth masses
+        }
     ];
+    
 
     planetsData.forEach(data => {
         loader.load(data.model, gltf => { 
@@ -93,7 +166,7 @@ function loadPlanets(scene, raycaster, mouse, planets) {
                 name: data.name,
                 distance: data.distance / 0.00008,
                 orbitSpeed: (1 / data.orbitPeriod) * .1,
-                rotationSpeed: (1 / data.rotationPeriod) * .05,
+                rotationSpeed: (1 / data.rotationPeriod) * 5,
                 angle: Math.random() * Math.PI * 2,
                 axialTilt: data.axialTilt,
                 mass: data.mass  
@@ -117,48 +190,86 @@ function loadPlanets(scene, raycaster, mouse, planets) {
 function updatePlanets(planets, selectedPlanet, zooming, camera) {
     planets.forEach(planet => {
         if (planet.userData) {
+            // Update planet position and rotation
             planet.userData.angle += planet.userData.orbitSpeed;
             planet.position.x = planet.userData.distance * Math.cos(planet.userData.angle);
             planet.position.z = planet.userData.distance * Math.sin(planet.userData.angle);
             planet.rotation.y += planet.userData.rotationSpeed;
 
-            const distance = camera.position.distanceTo(planet.position);
+            // Position the label above the planet
             planet.userData.label.position.set(planet.position.x, planet.position.y + 4, planet.position.z); 
+            const distance = camera.position.distanceTo(planet.position);
             const labelScale = Math.max(40, distance / 2); 
             planet.userData.label.scale.set(labelScale, labelScale, 20);
             planet.userData.label.lookAt(camera.position);
         }
     });
-    // Zoom
+
+    // Zoom Logic
     if (selectedPlanet && zooming) {
-        const baseZoomDistance = 200000;
-        const zoomAdjustmentFactor = selectedPlanet.scale.x * 100;
+        console.log("Selected Planet Scale:", selectedPlanet.scale.x);  // Debug: check planet scale
+
+        const baseZoomDistance = 5000;
+        let zoomAdjustmentFactor = 0;
+        
+        const bigPlanetThreshold = 5;
+        const smallPlanetThreshold = .5;
+        
+        
+        if (selectedPlanet.scale.x > bigPlanetThreshold) {
+            zoomAdjustmentFactor = 4500; 
+            console.log("Big planet zoom adjustment:", zoomAdjustmentFactor);  
+        } else if (selectedPlanet.scale.x <= smallPlanetThreshold) {
+            zoomAdjustmentFactor = -12000; 
+            console.log("Small planet zoom adjustment:", zoomAdjustmentFactor);  
+        } else if (selectedPlanet.scale.x > smallPlanetThreshold && selectedPlanet.scale.x <= bigPlanetThreshold) {
+            zoomAdjustmentFactor = -8050; 
+            console.log("Mid-sized planet zoom adjustment:", zoomAdjustmentFactor); 
+        }
+
+
         const zoomDistance = baseZoomDistance + zoomAdjustmentFactor;
+        console.log("Calculated Zoom Distance:", zoomDistance); 
+
         const planetPosition = selectedPlanet.position;
+        console.log("Selected Planet Position:", planetPosition); 
+
         const direction = new THREE.Vector3().subVectors(camera.position, planetPosition).normalize();
         const targetPosition = new THREE.Vector3().copy(planetPosition).add(direction.multiplyScalar(zoomDistance));
 
-        camera.position.lerp(targetPosition, 0.05);
+        console.log("Camera Target Position:", targetPosition);  
+
+        camera.position.lerp(targetPosition, 0.1);
         camera.lookAt(planetPosition);
     }
 }
 
-camera.position.z = 30000;
-camera.position.y = 50000;
+camera.position.z = 3000000;
+camera.position.y = 500000;
 
 function loadSun(scene) {
     const loader = new THREE.GLTFLoader();
     
     loader.load('assets/Sun.glb', gltf => {
         const sun = gltf.scene;
-        sun.scale.set(1000, 1000, 1000);
+        sun.scale.set(100, 100, 100);
         scene.add(sun);
-        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+
+        // Ambient light
+        const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Soft white light
         scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(0, 0, 10).normalize();
-        directionalLight.castShadow = true;
+
+        // Directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Set intensity as needed
+        directionalLight.position.set(100, 100, 100); // Adjust the position
+        directionalLight.target.position.set(0, 0, 0); // Point towards the center
+        directionalLight.target.updateMatrixWorld(); // Ensure the target is updated
         scene.add(directionalLight);
+        scene.add(directionalLight.target); // Add the target to the scene
+
+        // Optional: add helper to visualize the light direction
+        const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+        scene.add(helper);
     }, undefined, error => {
         console.error('Error loading model:', error);
     });
@@ -185,7 +296,7 @@ window.addEventListener('click', (event) => {
     const timeDiff = currentTime - lastClickTime;
 
     // Check for double-click
-    if (timeDiff < 300) {
+    if (timeDiff < 500) {
         // Handle double-click
         stopAllAudio();
         selectedPlanet = null; // Reset selection
@@ -245,7 +356,46 @@ function handlePlanetClick(planet) {
     } else {
         massAudioFiles.highMass.play();
     }
+
+    // Update the sidebar with planet details
+    updatePlanetDetailsSidebar(planet);
 }
+
+// Function to update the sidebar with the clicked planet's details
+function updatePlanetDetailsSidebar(planet) {
+    const sidebar = document.getElementById('planet-details-sidebar');
+    const planetName = document.getElementById('planet-name');
+    const planetDistance = document.getElementById('planet-distance');
+    const planetMass = document.getElementById('planet-mass');
+    const planetOrbitPeriod = document.getElementById('planet-orbit-period');
+    const planetRotationPeriod = document.getElementById('planet-rotation-period');
+    const planetAxialTilt = document.getElementById('planet-axial-tilt');
+
+    // Populate the sidebar with planet information
+    planetName.textContent = planet.userData.name;
+    planetDistance.textContent = `Distance: ${planet.userData.distance.toFixed(2)} km`;
+    planetMass.textContent = `Mass: ${planet.userData.mass} x 10^24 kg`;
+    planetOrbitPeriod.textContent = `Orbit Period: ${planet.userData.orbitSpeed.toFixed(2)} Earth days`;
+    planetRotationPeriod.textContent = `Rotation Period: ${planet.userData.rotationSpeed.toFixed(2)} Earth days`;
+    planetAxialTilt.textContent = `Axial Tilt: ${planet.userData.axialTilt.toFixed(2)}°`;
+
+    // Show the sidebar by adding the "open" class
+    sidebar.classList.add('open');
+}
+
+// Function to hide the sidebar when no planet is selected
+function hidePlanetDetailsSidebar() {
+    const sidebar = document.getElementById('planet-details-sidebar');
+    sidebar.classList.remove('open'); // Hide the sidebar by removing the "open" class
+}
+
+// Call this function when the sidebar needs to be hidden
+function resetPlanetSelection() {
+    selectedPlanet = null;
+    zooming = false;
+    hidePlanetDetailsSidebar(); // Hide sidebar when no planet is selected
+}
+
 
 // Animation loop
 function animate() {
