@@ -280,7 +280,7 @@ function updatePlanets(planets, selectedPlanet, zooming, camera) {
     }
 }
 
-camera.position.z = 930000;
+camera.position.z = 1030000;
 camera.position.y = 1055000;
 
 function loadSun(scene) {
